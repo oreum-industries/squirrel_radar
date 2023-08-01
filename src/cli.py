@@ -1,4 +1,3 @@
-# cli.py
 """CLI to manage Squirrel Radar Plots"""
 from pathlib import Path
 from typing import Optional
