@@ -1,7 +1,7 @@
 # Makefile
 # Simplifies dev install on MacOS x64 (Intel)
-.PHONY: create-env dev dev-js help lint mamba test-dev-env uninstall
-.SILENT: create-env dev dev-js help lint mamba test-dev-env uninstall
+.PHONY: create-env dev help lint mamba uninstall
+.SILENT: create-env dev help lint mamba uninstall
 SHELL := /bin/bash
 MAMBADL = https://github.com/conda-forge/miniforge/releases/latest/download/
 MAMBAV = Mambaforge-MacOSX-x86_64.sh
