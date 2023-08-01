@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "tal7aouy.theme",
+        "pdconsec.vscode-print",
+        "mechatroner.rainbow-csv",
+        "yzhang.markdown-all-in-one",
+        "euskadi31.json-pretty-printer",
+        "tamasfe.even-better-toml",
+        "github.vscode-github-actions",
+    ]
+}
