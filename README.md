@@ -205,7 +205,7 @@ To create the Radar plot, use the `create` step:
 
 ```zsh
 $> python src/cli.py create --scores 123334
-
+```
 
 ---
 ---
