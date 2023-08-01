@@ -1,5 +1,5 @@
 # cli.py
-"""CLI to manage ResEvol Engine (prepare, train, forecast, publish)"""
+"""CLI to manage Squirrel Radar Plots"""
 from pathlib import Path
 from typing import Optional
 
