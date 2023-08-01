@@ -55,5 +55,5 @@ repos:
     rev: v0.2.0
     hooks:
       - id: apache-license
-        files: ^oreum_core/
+        files: ^src/
         args: ["-a", "Oreum Industries"]
