@@ -23,7 +23,7 @@ import pandas as pd
 import plotly.express as px
 
 
-def clean_fname(s: str = None) -> str:
+def _clean_fname(s: str = None) -> str:
     """Reduced version of oreum_core snakey_lowercaser"""
     rx_to_underscore = re.compile(r'[-/]')
     rx_punct = re.compile('[{}]'.format(re.escape(string.punctuation)))
@@ -37,6 +37,8 @@ def create_radar(scores: list = [3, 3, 3, 3, 3, 3], project_name: str = None) ->
     NOTE:
     + Score list must be length 6, each score in range [0, 5], starting with Org Maturity
     + Suggest project_name e.g. 'Company, Month Year'"""
+    assert len(scores) == 6, "Scores must be length 6"
+    assert (min(scores) >= 0) & (max(scores) <= 5), "Scores must be in range [0, 5]"
     score_names = [
         '<b>Org Maturity</b><br><i>(Key Metric: Seniority)</i>',
         '<b>Management & Leadership</b><br><i>(Key Metric: Trust)</i>',
@@ -45,8 +47,6 @@ def create_radar(scores: list = [3, 3, 3, 3, 3, 3], project_name: str = None) ->
         '<b>Code & Architecture</b><br><i>(Key Metric: Testing)</i>',
         '<b>Operations</b><br><i>(Key Metric: Monitoring)</i>',
     ]
-    assert len(scores) == 6, "Scores must be length 6"
-    assert (min(scores) >= 0) & (max(scores) <= 5), "Scores must be in range [0, 5]"
     scoresd = {k: v for k, v in zip(score_names, scores)}
     title = ' - '.join(filter(None, ["Squirrel's Radar Assessment", project_name]))
 
@@ -76,12 +76,8 @@ def create_radar(scores: list = [3, 3, 3, 3, 3, 3], project_name: str = None) ->
         showarrow=False,
         font=dict(color='#888', size=8),
     )
-    # f.update_layout(margin_pad=100)
-    # f.update_layout(margin=dict(l=120, r=120))
-    # f.update_layout(margin=dict(pad=120))
-    fqn = Path("plots", f"{clean_fname(title)}.png")
+    fqn = Path("plots", f"{_clean_fname(title)}.png")
     f.write_image(fqn, engine="kaleido", format='png')
-
     return f"Output to {fqn}"
 
 
