@@ -12,6 +12,7 @@ Quick Implementation of the
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![code style: flake8](https://img.shields.io/badge/code%20style-flake8-331188.svg)](https://flake8.pycqa.org/en/latest/)
 [![code style: isort](https://img.shields.io/badge/code%20style-isort-%231674b1?style=flat)](https://pycqa.github.io/isort/)
+[![GitHub Release](https://img.shields.io/github/v/release/oreum-industries/squirrel_radar?display_name=tag&sort=semver)](https://github.com/oreum-industries/squirrel_radar/releases)
 
 
 ### Contents
