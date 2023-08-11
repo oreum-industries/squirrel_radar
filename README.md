@@ -204,7 +204,7 @@ $> python src/cli.py --help
 To create the Radar plot, use the `create` step:
 
 ```zsh
-$> python src/cli.py create --scores 123334
+$> python src/cli.py create --scores 223334 --project-name "ABC Corp, July 2023"
 ```
 
 ---
