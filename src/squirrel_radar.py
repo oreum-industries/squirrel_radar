@@ -59,7 +59,7 @@ def create_radar(scores: list = [3, 3, 3, 3, 3, 3], project_name: str = None) ->
         range_r=[0, 5],
         start_angle=120,
         width=720,
-        height=600,
+        height=540,
         markers=True,
         title=title,
         render_mode='svg',
