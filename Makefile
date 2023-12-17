@@ -1,13 +1,15 @@
 # Makefile
-# Simplifies dev install on MacOS x64 (Intel)
-.PHONY: create-env dev help lint mamba uninstall
-.SILENT: create-env dev help lint mamba uninstall
-SHELL := /bin/bash
-MAMBADL = https://github.com/conda-forge/miniforge/releases/latest/download/
-MAMBAV = Mambaforge-MacOSX-x86_64.sh
-MAMBARC = $(HOME)/.mambarc
-MAMBARCMSG = Please create file $(MAMBARC), particularly to set platform: osx-64
-MAMBADIR = $(HOME)/.mamba
+# NOTE:
+# + Intended for install on MacOS Apple Silicon arm64 using Accelerate
+#   (NOT Intel x86 using MKL via Rosetta 2)
+# + Uses sh by default: to confirm shell create a recipe with $(info $(SHELL))
+.PHONY: dev help install-env install-mamba lint uninstall-env uninstall-mamba
+.SILENT: dev help install-env install-mamba lint uninstall-env uninstall-mamba
+MAMBADL := https://github.com/conda-forge/miniforge/releases/download/23.3.1-1
+MAMBAV := Miniforge3-MacOSX-arm64.sh
+MAMBARCMSG := Please create file $(MAMBARC), importantly set `platform: osx-arm64`
+MAMBARC := $(HOME)/.mambarc
+MAMBADIR := $(HOME)/miniforge
 PYTHON_DEFAULT = $(or $(shell which python3), $(shell which python))
 PYTHON_ENV = $(MAMBADIR)/envs/squirrel_radar/bin/python
 ifneq ("$(wildcard $(PYTHON_ENV))","")
@@ -15,20 +17,16 @@ ifneq ("$(wildcard $(PYTHON_ENV))","")
 else
     PYTHON = $(PYTHON_DEFAULT)
 endif
+VERSION := $(shell echo $(VVERSION) | sed 's/v//')
 
-create-env: ## create mamba (conda) environment  CONDA_SUBDIR=osx-64
-	export PATH=$(MAMBADIR)/bin:$$PATH; \
-		if which mamba; then echo "mamba ready"; else make mamba; fi
-	mamba env create --file condaenv_squirrel_radar.yml;
 
-dev:  # create env for local dev on any machine MacOS x64 (Intel)
-	make create-env
+dev:  ## create env for local dev
+	make install-env
 	export PATH=$(MAMBADIR)/envs/squirrel_radar/bin:$$PATH; \
 		export CONDA_ENV_PATH=$(MAMBADIR)/envs/squirrel_radar/bin; \
 		export CONDA_DEFAULT_ENV=squirrel_radar; \
-		export CONDA_SUBDIR=osx-64; \
-		$(PYTHON_ENV) -m pip index versions oreum_core; \
-		$(PYTHON_ENV) -m pip install -e .[dev]; \
+		export CONDA_SUBDIR=osx-arm64; \
+		$(PYTHON_ENV) -m pip install -e ".[dev]"; \
 		$(PYTHON_ENV) -c "import numpy as np; np.__config__.show()" > dev/install_log/blas_info.txt; \
 		pipdeptree -a > dev/install_log/pipdeptree.txt; \
 		pipdeptree -a -r > dev/install_log/pipdeptree_rev.txt; \
@@ -36,26 +34,55 @@ dev:  # create env for local dev on any machine MacOS x64 (Intel)
 		pre-commit install; \
 		pre-commit autoupdate;
 
-help:
-	@echo "Use \`make <target>' where <target> is:"
-	@echo "  dev           create local dev env"
-	@echo "  lint          run code lint & security checks"
-	@echo "  uninstall     remove local dev env (use from parent dir as `make -C squirrel_radar uninstall`)"
+install-env:  ## create mamba (conda) environment
+	export PATH=$(MAMBADIR)/bin:$$PATH; \
+		if which mamba; then echo "mamba ready"; else make install-mamba; fi
+	export PATH=$(MAMBADIR)/bin:$$PATH; \
+		export CONDA_SUBDIR=osx-arm64; \
+		mamba update -n base mamba; \
+		mamba env create --file condaenv_squirrel_radar.yml -y;
 
-lint: ## run code linters and static security (checks only)
-	$(PYTHON) -m pip install black flake8 isort
+install-mamba:  ## get mamba via miniforge, explicitly use bash
+	test -f $(MAMBARC) || { echo $(MAMBARCMSG); exit 1; }
+	wget $(MAMBADL)/$(MAMBAV) -O $(HOME)/miniforge.sh
+	chmod 755 $(HOME)/miniforge.sh
+	bash $(HOME)/miniforge.sh -b -p $(MAMBADIR)
+	export PATH=$(MAMBADIR)/bin:$$PATH; \
+		conda init zsh;
+	rm $(HOME)/miniforge.sh
+
+lint:  ## run code lint & security checks
+	$(PYTHON) -m pip install black flake8 interrogate isort bandit
 	black --check --diff --config pyproject.toml src/
 	isort --check-only src/
 	flake8 src/
+	interrogate src/
+	bandit --config pyproject.toml -r src/
 
-mamba:  ## get mamba via mambaforge for MacOS x86_64 (Intel via Rosetta2)
-	test -f $(MAMBARC) || { echo $(MAMBARCMSG); exit 1; }
-	wget $(MAMBADL)$(MAMBAV) -O $$HOME/mambaforge.sh
-	bash $$HOME/mambaforge.sh -b -p $$HOME/.mamba
-	export PATH=$$HOME/.mamba/bin:$$PATH; \
-		conda init zsh;
-	rm $$HOME/mambaforge.sh
+help:
+	@echo "Use \make <target> where <target> is:"
+	@echo "  dev           create local dev env"
+	@echo "  lint          run code lint & security checks"
+	@echo "  uninstall-env remove env (use from parent dir \make -C squirrel_radar ...)"
 
-uninstall: ## remove mamba env (use from parent dir as `make -C squirrel_radar/ uninstall`)
-	mamba env remove --name squirrel_radar -y
-	mamba clean -ay
+
+test-dev-env:  ## test the dev machine install of critial numeric packages
+	export PATH=$(MAMBADIR)/bin:$$PATH; \
+		export PATH=$(MAMBADIR)/envs/squirrel_radar/bin:$$PATH; \
+		export CONDA_ENV_PATH=$(MAMBADIR)/envs/squirrel_radar/bin; \
+		export CONDA_DEFAULT_ENV=squirrel_radar; \
+		$(PYTHON_ENV) -c "import numpy as np; np.test()" > dev/install_log/tests_numpy.txt; \
+
+
+uninstall-env: ## remove mamba env
+	export PATH=$(MAMBADIR)/bin:$$PATH; \
+		export CONDA_SUBDIR=osx-arm64; \
+		mamba env remove --name squirrel_radar -y; \
+		conda clean --all -afy;
+		# mamba clean -afy  # 2023-12-10 see: https://github.com/mamba-org/mamba/issues/3044
+
+uninstall-mamba:  ## last ditch per https://github.com/conda-forge/miniforge#uninstallation
+	conda init zsh --reverse
+	rm -rf $(MAMBADIR)
+	rm -rf $(HOME)/.conda
+	rm -f $(HOME)/.condarc
