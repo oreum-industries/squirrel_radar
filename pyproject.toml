@@ -42,6 +42,16 @@ dev = [
 [project.urls]
 homepage = "https://github.com/oreum-industries/squirrel_radar"
 
+
+[tool.bandit]
+skips = [
+    "B101",  # skip asserts
+    "B404",
+    "B603",
+    "B607",
+]
+
+
 [tool.black]
 line-length = 88
 target-version = ["py311"]
