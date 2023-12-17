@@ -7,12 +7,15 @@
 Quick Implementation of the
 [Squirrel Radar](https://douglassquirrel.com/radar)
 
-
+[![Python](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org)
+[![License](https://img.shields.io/badge/license-Apache2.0-blue.svg)](https://choosealicense.com/licenses/apache-2.0/)
+[![GitHub Release](https://img.shields.io/github/v/release/oreum-industries/squirrel_radar?display_name=tag&sort=semver)](https://github.com/oreum-industries/squirrel_radar/releases)
 [![CI](https://github.com/oreum-industries/squirrel_radar/workflows/ci/badge.svg)](https://github.com/oreum-industries/squirrel_radar/actions/workflows/ci.yml)
+
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![code style: flake8](https://img.shields.io/badge/code%20style-flake8-331188.svg)](https://flake8.pycqa.org/en/latest/)
 [![code style: isort](https://img.shields.io/badge/code%20style-isort-%231674b1?style=flat)](https://pycqa.github.io/isort/)
-[![GitHub Release](https://img.shields.io/github/v/release/oreum-industries/squirrel_radar?display_name=tag&sort=semver)](https://github.com/oreum-industries/squirrel_radar/releases)
+
 
 
 ### Contents
@@ -103,8 +106,14 @@ upon directory open
 Notes:
 
 + We use `conda` virtual envs controlled by `mamba` (quicker than `conda`)
-+ We install packages using `mambaforge` (sourced from the `conda-forge` repo) wherever possible and use `pip` for packages that are handled better by `pip` and/or more up-to-date on [pypi](https://pypi.org)
++ We install packages using `miniforge` (sourced from the `conda-forge` repo)
+  wherever possible and only use `pip` for packages that are handled better by
+  `pip` and/or more up-to-date on [pypi](https://pypi.org)
++ Packages might not be the very latest because we want stability for `pymc`
+  which is usually in a state of development flux
 + See [cheat sheet of conda commands](https://conda.io/docs/_downloads/conda-cheatsheet.pdf)
++ The `Makefile` creates a dev env and will also download and preinstall
+  `miniforge` if not yet installed on your system
 
 
 #### 2.2.1 Create the dev environment
@@ -117,15 +126,17 @@ $> make -C squirrel_radar dev
 
 This will also create some files to help confirm / diagnose successful installation:
 
++ `dev/install_log/blas_info.txt` for the `BLAS MKL` installation for `numpy`
 + `dev/install_log/pipdeptree[_rev].txt` lists installed package deps (and reversed)
 + `LICENSES_THIRD_PARTY.md` details the license for each package used
+
 
 #### 2.2.2 To remove the dev environment (Useful during env install experimentation):
 
 From the dir above `squirrel_radar/` project dir:
 
 ```zsh
-$> make -C squirrel_radar uninstall
+$> make -C squirrel_radar uninstall-env
 ```
 
 
@@ -216,6 +227,3 @@ See LICENSE.md.
 
 Oreum OÜ t/a Oreum Industries, Sepapaja 6, Tallinn, 15551, Estonia,
 reg.16122291, [oreum.io](https://oreum.io)
-
----
-Oreum OÜ &copy; 2023

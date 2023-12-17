@@ -1,23 +1,23 @@
-# Manually created as-at 2022-02-15
-# Last updated as-at 2023-07-31
-# NOTE:
-#  + Creates a virtual env for project usage
-#  + Require running on Intel x86 AMD64 CPU (or Rosetta2 on MacOS)
-#  + Install with mamba via Makefile, must force MKL via libblas (note not "blas")
-#  + Install numpy alongside from defaults channel (the only one compiled against MKL)
-#    see https://github.com/conda-forge/numpy-feedstock/issues/84#issuecomment-385186685
-#  + This is a minimal set of packages dependent upon forcing MKL and conda-forge
-#  + There's also a fuller set of deps to be installed by pip in the pyproject.toml
+# Manually created as-at 2023-0601
+# Last updated as-at 2023-12-10
+# NOTES:
+#  + Creates a virtual env for project development
+#  + Require running on Apple Silicon ARM64 (NOT Intel x86 AMD64 CPU via Rosetta2)
+#  + Install with mamba via Makefile, there's also a fuller set of deps to be
+#    installed by pip in the pyproject.toml
+#  + numpy not strictly needed here but because we're explcit about BLAS/LAPACK
+#    from acccelerate, then also get specific numpy
+#    also see https://numpy.org/install/ and https://github.com/numpy/numpy/pull/24053
+#  + libblas, libcblas, liblapack, not strictly needed here but we want to be
+#    explcit about forcing BLAS to use Accelerate
 name: squirrel_radar
 channels:
-  - defaults
-  # - conda-forge  # commented out - we declare specifics per package and want numpy from defaults
+  - conda-forge
+  # - defaults
 dependencies:
-- numpy>=1.24.3   # NOTE: the MKL version is only available in defaults
 - conda-forge::ipykernel>=6.23.1
-- conda-forge::libblas=*[build=*mkl]    # force MKL
-- conda-forge::libcblas=*[build=*mkl]   # force MKL
-- conda-forge::liblapack=*[build=*mkl]  # force MKL
-- conda-forge::mkl==2021.4.*  # NOTE 2022 version(s) dont work on MacOS https://stackoverflow.com/a/71640311/1165112
-- conda-forge::mkl-service==2.4.*
-- conda-forge::python==3.10.*
+- conda-forge::numpy>=1.25.2   #>=1.26.2  # see NOTES
+- conda-forge::libblas=*[build=*accelerate]  # see NOTES
+- conda-forge::libcblas=*[build=*accelerate]  # see NOTES
+- conda-forge::liblapack=*[build=*accelerate]  # see NOTES
+- conda-forge::python==3.11.*

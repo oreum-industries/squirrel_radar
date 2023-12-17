@@ -1,16 +1,16 @@
 [project]
 name = "squirrel_radar"
-version = "1.0.1"
+version = "1.1.0"
 description = "Squirrel Radar Implemention by Oreum Industries"
 readme = "README.md"
 license = {file = "LICENSE.md"}
 authors = [{ name = "Jonathan Sedar", email = "jonathan.sedar@oreum.io" },]
-requires-python = "==3.10.*"
+requires-python = "==3.11.*"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Information Analysis",
@@ -44,7 +44,7 @@ homepage = "https://github.com/oreum-industries/squirrel_radar"
 
 [tool.black]
 line-length = 88
-target-version = ["py39"]
+target-version = ["py311"]
 skip-string-normalization = true
 skip-magic-trailing-comma = true
 include = '\.py$'
@@ -58,3 +58,4 @@ verbose = true
 profile = 'black'
 multi_line_output = 3
 skip_gitignore = true
+py_version = 311
