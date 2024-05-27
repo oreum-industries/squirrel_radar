@@ -40,12 +40,12 @@ def create_radar(scores: list = [3, 3, 3, 3, 3, 3], project_name: str = None) ->
     assert len(scores) == 6, "Scores must be length 6"
     assert (min(scores) >= 0) & (max(scores) <= 5), "Scores must be in range [0, 5]"
     score_names = [
-        '<b>Org Maturity</b><br><i>(Key Metric: Seniority)</i>',
-        '<b>Management & Leadership</b><br><i>(Key Metric: Trust)</i>',
-        '<b>Product Fit</b><br><i>(Key Metric: Sales)</i>',
-        '<b>Feedback</b><br><i>(Key Metric: Cycle Time)</i>',
-        '<b>Code & Architecture</b><br><i>(Key Metric: Testing)</i>',
-        '<b>Operations</b><br><i>(Key Metric: Monitoring)</i>',
+        '<b>Org Maturity</b>',
+        '<b>Management & Leadership</b>',
+        '<b>Product Fit</b>',
+        '<b>Feedback</b>',
+        '<b>Code & Architecture</b>',
+        '<b>Operations</b>',
     ]
     scoresd = {k: v for k, v in zip(score_names, scores)}
     title = ' - '.join(filter(None, ["Squirrel's Radar Assessment", project_name]))
